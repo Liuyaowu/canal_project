@@ -1,5 +1,6 @@
 package com.mobei.canal;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class TypeConvertHandler {
         BEAN_FIELD_TYPE.put(Long.class, "Long");
         BEAN_FIELD_TYPE.put(Double.class, "Double");
         BEAN_FIELD_TYPE.put(String.class, "String");
-        BEAN_FIELD_TYPE.put(Date.class, "java.util.Date");
+        BEAN_FIELD_TYPE.put(Date.class, "java.handle.Date");
         BEAN_FIELD_TYPE.put(java.sql.Date.class, "java.sql.Date");
         BEAN_FIELD_TYPE.put(java.sql.Timestamp.class, "java.sql.Timestamp");
         BEAN_FIELD_TYPE.put(java.sql.Time.class, "java.sql.Time");
@@ -43,25 +44,70 @@ public class TypeConvertHandler {
         return Double.valueOf(source);
     }
 
-//    protected static final Date parseToDate(String source) {
-//        if (isSourceNull(source)) {
-//            return null;
-//        }
-//        if (source.length() == 10) {
-//            source = source + " 00:00:00";
-//        }
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//
-//
-//        return Date.valueOf(source);
-//    }
-//
-//    protected static final Double parseToDouble(String source) {
-//        if (isSourceNull(source)) {
-//            return null;
-//        }
-//        return Double.valueOf(source);
-//    }
+    protected static final Date parseToDate(String source) {
+        if (isSourceNull(source)) {
+            return null;
+        }
+        if (source.length() == 10) {
+            source = source + " 00:00:00";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date;
+        try {
+            date = sdf.parse(source);
+        } catch (Exception e) {
+            return null;
+        }
+        return date;
+    }
+
+    protected static final java.sql.Date parseToSqlDate(String source) {
+        if (isSourceNull(source)) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date sqlDate;
+        Date utilDate;
+        try {
+            utilDate = sdf.parse(source);
+        } catch (Exception e) {
+            return null;
+        }
+        sqlDate = new java.sql.Date(utilDate.getTime());
+        return sqlDate;
+    }
+
+    protected static final java.sql.Timestamp parseToTimeStamp(String source) {
+        if (isSourceNull(source)) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date;
+        java.sql.Timestamp timestamp;
+        try {
+            date = sdf.parse(source);
+        } catch (Exception e) {
+            return null;
+        }
+        timestamp = new java.sql.Timestamp(date.getTime());
+        return timestamp;
+    }
+
+    protected static final java.sql.Time parseToSqlTime(String source) {
+        if (isSourceNull(source)) {
+            return null;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        Date date;
+        java.sql.Time time;
+        try {
+            date = sdf.parse(source);
+        } catch (Exception e) {
+            return null;
+        }
+        time = new java.sql.Time(date.getTime());
+        return time;
+    }
 
     private static boolean isSourceNull(String source) {
         if (source == "" || source == null) {
@@ -69,6 +115,5 @@ public class TypeConvertHandler {
         }
         return false;
     }
-
 
 }

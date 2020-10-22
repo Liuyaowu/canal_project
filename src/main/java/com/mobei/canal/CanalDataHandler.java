@@ -48,6 +48,24 @@ public class CanalDataHandler extends TypeConvertHandler {
                             case "Long":
                                 field.set(bean, parseToLong(columnValue));
                                 break;
+                            case "Double":
+                                field.set(bean, parseToDouble(columnValue));
+                                break;
+                            case "String":
+                                field.set(bean, columnValue);
+                                break;
+                            case "java.handle.Date":
+                                field.set(bean, parseToDate(columnValue));
+                                break;
+                            case "java.sql.Date":
+                                field.set(bean, parseToSqlDate(columnValue));
+                                break;
+                            case "java.sql.Timestamp":
+                                field.set(bean, parseToTimeStamp(columnValue));
+                                break;
+                            case "java.sql.Time":
+                                field.set(bean, parseToSqlTime(columnValue));
+                                break;
                         }
                     } else {
                         field.set(bean, parseObj(columnValue));
@@ -55,7 +73,7 @@ public class CanalDataHandler extends TypeConvertHandler {
                 }
             }
         } catch (Exception exception) {
-            log.error("e");
+            log.error("初始化对象异常");
         }
         return bean;
     }
